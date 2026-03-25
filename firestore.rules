@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 1. Rule for diagnostics
+    match /_diagnostics/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 2. Rule for employees
+    match /employees/{employeeId} {
+      allow read, write: if request.auth != null && (
+        (request.method == 'create' && request.resource.data.ownerId == request.auth.uid) ||
+        (resource.data.ownerId == request.auth.uid)
+      );
+    }
+    
+    // 3. Rule for loans
+    match /loans/{loanId} {
+      allow read, write: if request.auth != null && (
+        (request.method == 'create' && request.resource.data.ownerId == request.auth.uid) ||
+        (resource.data.ownerId == request.auth.uid)
+      );
+    }
+    
+    // 4. Rule for attendance
+    match /attendance/{attendanceId} {
+      allow read, write: if request.auth != null && (
+        (request.method == 'create' && request.resource.data.ownerId == request.auth.uid) ||
+        (resource.data.ownerId == request.auth.uid)
+      );
+    }
+
+    // 5. Rule for activity logs
+    match /activity_logs/{logId} {
+      allow read, write: if request.auth != null && (
+        (request.method == 'create' && request.resource.data.ownerId == request.auth.uid) ||
+        (resource.data.ownerId == request.auth.uid)
+      );
+    }
+  }
+}
